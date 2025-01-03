@@ -1,2 +1,3 @@
-# pettake-server
-PetTake server application.
+# PetTake Server
+
+PetTake server application using GraphQL.
