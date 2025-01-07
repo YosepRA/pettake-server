@@ -1,3 +1,7 @@
+const passport = require('passport');
+
+const User = require('./user-model.js');
+
 const userController = {
   index(req, res) {
     res.send('PetTake user REST API index.');
