@@ -113,9 +113,215 @@ Type: `JSON`
     Default: ''  
     User's full name.
 
+Example:
+
+```json
+{
+  "user": {
+    "username": "joe",
+    "password": "passwordjoe",
+    "email": "joe@mail.com",
+    "name": "Joe Smith"
+  }
+}
+```
+
 **Return**  
 User registration status and a login session if successful.
 
 **Response**
 
+Successful registration:
+
+```js
+{
+  status: 'ok',
+  user: {
+    username: 'joe',
+  }
+}
+```
+
 **Error Responses**
+
+Missing required data:
+
+```js
+{
+  status: 'error',
+  message: 'Missing "x" data for registration.'
+}
+```
+
+Username and/or email is already registered:
+
+```js
+{
+  status: 'error',
+  message: 'User with username "x" is already registered.'
+}
+```
+
+### **User Login**
+
+Logs in a user.
+
+**Endpoint**
+
+```
+POST /user/login
+```
+
+**Parameters**
+
+_No parameter._
+
+**Body**
+
+Type: `JSON`
+
+- `username` **Required**  
+  type: `String`  
+  Default: ''  
+  User's username.
+- `password` **Required**  
+  type: `String`  
+  Default: ''  
+  User's password.
+- `rememberMe` **Required**  
+  type: `Boolean`  
+  Default: `false`  
+  Option for user to save the login session for a set period of time. Default to 30 days.
+
+Example:
+
+```json
+{
+  "username": "joe",
+  "password": "passwordjoe",
+  "rememberMe": false
+}
+```
+
+**Return**  
+User login status and a login session if successful.
+
+**Response**
+
+Successful login:
+
+```js
+{
+  status: 'ok',
+  user: {
+    username: 'joe',
+  }
+}
+```
+
+**Error Responses**
+
+Missing required data:
+
+```js
+{
+  status: 'error',
+  message: 'Missing "x" data for login.'
+}
+```
+
+Incorrect credentials:
+
+```js
+{
+  status: 'error',
+  message: 'Username and password are invalid.'
+}
+```
+
+### **Get User Session**
+
+Get a user login session information.
+
+**Endpoint**
+
+```
+GET /user/get-user-session
+```
+
+**Parameters**
+
+_No parameter._
+
+**Body**
+
+_No body data._
+
+**Return**  
+User login status and a login session if successful.
+
+**Response**
+
+Successful response:
+
+```js
+{
+  status: 'ok',
+  user: {
+    username: 'joe',
+  }
+}
+```
+
+**Error Responses**
+
+No login session found:
+
+```js
+{
+  status: 'ok',
+  user: null,
+}
+```
+
+### **User Logout**
+
+Logs out a user.
+
+**Endpoint**
+
+```
+POST /user/logout
+```
+
+**Parameters**
+
+_No parameter._
+
+**Body**
+
+_No body data._
+
+**Return**  
+User logout status.
+
+**Response**
+
+Successful response:
+
+```js
+{
+  status: 'ok',
+}
+```
+
+**Error Responses**
+
+No login session found:
+
+```js
+{
+  status: 'error',
+  message: 'No login session found.'
+}
+```
