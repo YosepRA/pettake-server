@@ -1,0 +1,99 @@
+scalar GraphQLDate
+
+# ========== Basic Types ========== #
+
+type Pet {
+  _id: ID!
+  name: String!
+  breed: String!
+  age: String!
+  gender: String!
+  coatLength: String
+  preferHomeWith: [String]
+  preferHomeWithout: [String]
+  health: [String]
+  images: [PetImage]
+  description: String!
+  author: User!
+  createdAt: GraphQLDate!
+}
+
+type PetImage {
+  _id: ID!
+  publicId: String!
+  url: String!
+}
+
+type PetListWithPage {
+  docs: [Pet]!
+  totalDocs: Int!
+  page: Int!
+  totalPages: Int!
+}
+
+# ========== Input Types ========== #
+
+input PetInput {
+  name: String!
+  breed: String!
+  age: String!
+  gender: String!
+  coatLength: String
+  preferHomeWith: [String]
+  preferHomeWithout: [String]
+  health: [String]
+  images: [PetImageInput]
+  description: String!
+}
+
+input PetUpdateInput {
+  name: String
+  breed: String
+  age: String
+  gender: String
+  coatLength: String
+  preferHomeWith: [String]
+  preferHomeWithout: [String]
+  health: [String]
+  images: [PetImageInput]
+  description: String
+}
+
+input PetImageInput {
+  publicId: String!
+  url: String!
+}
+
+# ========== Top Level Declaration ========== #
+
+extend type Query {
+  petList(
+    page: Int!
+    sort: String!
+    breed: String
+    age: String
+    gender: String
+    coatLength: String
+    preferHomeWith: [String]
+    preferHomeWithout: [String]
+    health: [String]
+  ): PetListWithPage!
+  pet(_id: ID!): Pet!
+  userPetList(
+    page: Int!
+    sort: String!
+    breed: String
+    age: String
+    gender: String
+    coatLength: String
+    preferHomeWith: [String]
+    preferHomeWithout: [String]
+    health: [String]
+  ): PetListWithPage!
+}
+
+extend type Mutation {
+  petCreate(pet: PetInput!): Pet!
+  petUpdate(pet: PetUpdateInput!): Pet!
+  petDelete(_id: ID!): Boolean!
+}

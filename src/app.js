@@ -4,10 +4,13 @@ require('module-alias/register');
 const express = require('express');
 const session = require('express-session');
 const logger = require('morgan');
+const cors = require('cors');
+const { expressMiddleware } = require('@apollo/server/express4');
 
 const index = require('@Features/index/index.js');
 const user = require('@Features/user/index.js');
 const mongoConnect = require('@Database/mongo-connect.js');
+const startApolloServer = require('@GraphQL/index.js');
 const passportLib = require('@Lib/passport/index.js');
 
 const app = express();
@@ -34,20 +37,26 @@ const sessionConfig = {
 
 const db = mongoConnect(mongoUrl);
 
-/* ======================= Middlewares ======================= */
+/* ======================= GraphQL and Server Initialization ======================= */
 
-app.use(logger('dev'));
-app.use(session(sessionConfig));
+startApolloServer().then((graphQLServer) => {
+  /* ======================= Middlewares ======================= */
 
-/* ======================= Passport Initialization ======================= */
+  app.use(logger('dev'));
+  app.use(session(sessionConfig));
+  app.use(cors());
 
-passportLib.start(app);
+  /* ======================= Passport Initialization ======================= */
 
-/* ======================= Routes ======================= */
+  passportLib.start(app);
 
-app.use('/', index.router);
-app.use('/user', user.router);
+  /* ======================= Routes ======================= */
 
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port} ...`);
+  app.use('/', index.router);
+  app.use('/user', user.router);
+  app.use('/graphql', express.json(), expressMiddleware(graphQLServer));
+
+  app.listen(port, () => {
+    console.log(`Server is listening on port ${port} ...`);
+  });
 });
