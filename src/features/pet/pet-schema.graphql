@@ -67,9 +67,11 @@ input PetImageInput {
 # ========== Top Level Declaration ========== #
 
 extend type Query {
+  "Get a list of pets according to given parameters."
   petList(
     page: Int!
     sort: String!
+    limit: Int
     breed: String
     age: String
     gender: String
@@ -78,10 +80,12 @@ extend type Query {
     preferHomeWithout: [String]
     health: [String]
   ): PetListWithPage!
-  pet(_id: ID!): Pet!
+  "Get one pet details data according to given ID."
+  pet(id: ID!): Pet!
   userPetList(
     page: Int!
     sort: String!
+    limit: Int
     breed: String
     age: String
     gender: String
@@ -95,5 +99,5 @@ extend type Query {
 extend type Mutation {
   petCreate(pet: PetInput!): Pet!
   petUpdate(pet: PetUpdateInput!): Pet!
-  petDelete(_id: ID!): Boolean!
+  petDelete(id: ID!): Boolean!
 }

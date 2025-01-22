@@ -7,12 +7,7 @@ const { merge } = require('lodash');
 const { resolvers: petResolvers } = require('@Features/pet/index.js');
 const GraphQLDate = require('@GraphQL/scalars/graphql-date.js');
 
-async function loadSchema() {
-  const schemaPaths = [
-    '../features/pet/pet-schema.graphql',
-    '../features/user/user-schema.graphql',
-  ];
-
+function loadSchema(schemaPaths) {
   const readPromises = schemaPaths.map((schemaPath) =>
     readFile(path.resolve(__dirname, schemaPath), 'utf-8'),
   );
@@ -31,22 +26,35 @@ const Query = `
 `;
 
 const resolvers = {
-  Query: {
-    petList: petResolvers.list,
-    pet: petResolvers.details,
-  },
+  Query: {},
   Mutation: {},
   GraphQLDate,
 };
 
+async function resolveContext({ req }) {
+  const context = {};
+
+  if (req.isAuthenticated()) {
+    context.user = req.user;
+  }
+
+  return context;
+}
+
 async function startApolloServer() {
-  const [Pet, User] = await loadSchema();
+  // Relative path to this 'index.js' file.
+  const schemaPaths = [
+    '../features/pet/pet-schema.graphql',
+    '../features/user/user-schema.graphql',
+  ];
+
+  const [Pet, User] = await loadSchema(schemaPaths);
 
   const schemas = [Query, Pet, User];
 
   const server = new ApolloServer({
     typeDefs: schemas,
-    resolvers,
+    resolvers: merge(resolvers, petResolvers),
   });
 
   await server.start();
@@ -54,4 +62,4 @@ async function startApolloServer() {
   return server;
 }
 
-module.exports = startApolloServer;
+module.exports = { startApolloServer, resolveContext };

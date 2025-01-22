@@ -10,7 +10,7 @@ const { expressMiddleware } = require('@apollo/server/express4');
 const index = require('@Features/index/index.js');
 const user = require('@Features/user/index.js');
 const mongoConnect = require('@Database/mongo-connect.js');
-const startApolloServer = require('@GraphQL/index.js');
+const { startApolloServer, resolveContext } = require('@GraphQL/index.js');
 const passportLib = require('@Lib/passport/index.js');
 
 const app = express();
@@ -54,7 +54,11 @@ startApolloServer().then((graphQLServer) => {
 
   app.use('/', index.router);
   app.use('/user', user.router);
-  app.use('/graphql', express.json(), expressMiddleware(graphQLServer));
+  app.use(
+    '/graphql',
+    express.json(),
+    expressMiddleware(graphQLServer, { context: resolveContext }),
+  );
 
   app.listen(port, () => {
     console.log(`Server is listening on port ${port} ...`);
