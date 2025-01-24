@@ -1,23 +1,11 @@
 const { GraphQLError } = require('graphql');
 
+const {
+  utils: { handleGraphQLAuthError },
+} = require('@Features/user/index.js');
 const { promiseResolver, buildPetFilters } = require('@Utils/index.js');
 
 const Pet = require('./pet-model.js');
-
-const demoPet = {
-  _id: '123',
-  name: 'Mikey',
-  breed: 'Golden Retriever',
-  age: 'Puppy',
-  gender: 'Male',
-  description: 'The always sweet Mikey the Retriever.',
-  author: {
-    _id: '123',
-    username: 'testjoe',
-    email: 'joe@mail.com',
-    name: 'Joe Smith',
-  },
-};
 
 /* ======================= Queries ======================= */
 
@@ -75,6 +63,8 @@ async function userPetList(
   { sort = '-createdAt', page = 1, limit = 10, ...restFilters },
   { user },
 ) {
+  if (!user) handleGraphQLAuthError('unauthenticated');
+
   const filter = buildPetFilters(restFilters);
 
   filter._id = { $in: user.pets };
@@ -102,15 +92,86 @@ async function userPetList(
 
 /* ======================= Mutations ======================= */
 
-async function create(_, { pet }) {
-  return demoPet;
+async function create(_, { pet: petArgs }, { user }) {
+  if (!user) handleGraphQLAuthError('unauthenticated');
+
+  const pet = { ...petArgs, author: user };
+
+  const [newPet, createError] = await promiseResolver(Pet.create(pet));
+
+  if (createError) {
+    throw new GraphQLError(createError.message, {
+      extensions: {
+        code: 'INTERNAL_SERVER_ERROR',
+      },
+    });
+  }
+
+  user.pets.push(newPet._id);
+  await user.save();
+
+  return newPet;
 }
 
-async function update(_, { pet }) {
-  return demoPet;
+async function update(_, { id, petUpdates }, { user }) {
+  if (!user) handleGraphQLAuthError('unauthenticated');
+
+  let [pet, petQueryError] = await promiseResolver(Pet.findById(id));
+
+  if (petQueryError) {
+    throw new GraphQLError(petQueryError.message, {
+      extensions: {
+        code: 'INTERNAL_SERVER_ERROR',
+      },
+    });
+  }
+
+  // Auhtorization whether this pet belongs to this user.
+  if (!pet.author.equals(user._id)) handleGraphQLAuthError('forbidden');
+
+  // Apply the updates.
+  pet = Object.assign(pet, petUpdates);
+
+  const savedPet = await pet.save();
+
+  return savedPet;
 }
 
-async function remove(_, { id }) {
+async function remove(_, { id }, { user }) {
+  if (!user) handleGraphQLAuthError('unauthenticated');
+
+  const isPetBelongsToUser = user.pets.some((petId) => petId.toString() === id);
+
+  if (!isPetBelongsToUser) {
+    handleGraphQLAuthError('forbidden');
+  }
+
+  // Delete pet from database.
+  const [deletedPet, deleteError] = await promiseResolver(
+    Pet.findByIdAndDelete(id),
+  );
+
+  if (deletedPet === null) {
+    throw new GraphQLError('No pet found', {
+      extensions: {
+        code: 'BAD_USER_INPUT',
+      },
+    });
+  }
+
+  if (deleteError) {
+    throw new GraphQLError(deleteError.message, {
+      extensions: {
+        code: 'INTERNAL_SERVER_ERROR',
+      },
+    });
+  }
+
+  // Delete pet from user's pet list.
+  user.pets = user.pets.filter((petId) => petId.toString() !== id);
+
+  await user.save();
+
   return true;
 }
 
@@ -128,7 +189,5 @@ const resolvers = {
     petDelete: remove,
   },
 };
-
-// module.exports = { list, details };
 
 module.exports = resolvers;

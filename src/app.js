@@ -33,6 +33,11 @@ const sessionConfig = {
   resave: false,
 };
 
+const corsConfig = {
+  origin: true,
+  credentials: true,
+};
+
 /* ======================= Database Connection ======================= */
 
 const db = mongoConnect(mongoUrl);
@@ -44,7 +49,7 @@ startApolloServer().then((graphQLServer) => {
 
   app.use(logger('dev'));
   app.use(session(sessionConfig));
-  app.use(cors());
+  app.use(cors(corsConfig));
 
   /* ======================= Passport Initialization ======================= */
 

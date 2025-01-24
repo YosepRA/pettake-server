@@ -14,7 +14,11 @@ export default [
       '@stylistic/js': stylisticJs,
     },
     rules: {
-      '@stylistic/js/indent': ['error', 2, { offsetTernaryExpressions: true }],
+      '@stylistic/js/indent': [
+        'error',
+        2,
+        { offsetTernaryExpressions: true, SwitchCase: 1 },
+      ],
       '@stylistic/js/linebreak-style': ['error', 'unix'],
       '@stylistic/js/quotes': ['error', 'single'],
       '@stylistic/js/semi': ['error', 'always'],

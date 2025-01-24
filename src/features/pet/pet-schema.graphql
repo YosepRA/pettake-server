@@ -98,6 +98,6 @@ extend type Query {
 
 extend type Mutation {
   petCreate(pet: PetInput!): Pet!
-  petUpdate(pet: PetUpdateInput!): Pet!
+  petUpdate(id: ID!, petUpdates: PetUpdateInput!): Pet!
   petDelete(id: ID!): Boolean!
 }
