@@ -9,6 +9,7 @@ const { expressMiddleware } = require('@apollo/server/express4');
 
 const index = require('@Features/index/index.js');
 const user = require('@Features/user/index.js');
+const image = require('@Features/image/index.js');
 const mongoConnect = require('@Database/mongo-connect.js');
 const { startApolloServer, resolveContext } = require('@GraphQL/index.js');
 const passportLib = require('@Lib/passport/index.js');
@@ -59,6 +60,7 @@ startApolloServer().then((graphQLServer) => {
 
   app.use('/', index.router);
   app.use('/user', user.router);
+  app.use('/image', image.router);
   app.use(
     '/graphql',
     express.json(),
