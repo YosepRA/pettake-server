@@ -12,7 +12,7 @@ function handleUpload(req, res, next) {
     } else if (err) {
       return res.status(500).json({
         status: 'error',
-        message: `${err.name} - ${err.message}`,
+        message: err.message,
       });
     }
 

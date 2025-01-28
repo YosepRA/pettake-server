@@ -13,6 +13,7 @@ const image = require('@Features/image/index.js');
 const mongoConnect = require('@Database/mongo-connect.js');
 const { startApolloServer, resolveContext } = require('@GraphQL/index.js');
 const passportLib = require('@Lib/passport/index.js');
+const cloudinaryLib = require('@Lib/cloudinary/index.js');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -52,9 +53,13 @@ startApolloServer().then((graphQLServer) => {
   app.use(session(sessionConfig));
   app.use(cors(corsConfig));
 
-  /* ======================= Passport Initialization ======================= */
+  /* ======================= Start Passport ======================= */
 
   passportLib.start(app);
+
+  /* ======================= Start Cloudinary ======================= */
+
+  cloudinaryLib.start();
 
   /* ======================= Routes ======================= */
 

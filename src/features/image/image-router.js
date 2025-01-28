@@ -11,6 +11,6 @@ router.get('/', controller.index);
 
 router.post('/', handleUpload, controller.create);
 
-router.delete('/', controller.remove);
+router.delete('/', express.json(), controller.remove);
 
 module.exports = router;

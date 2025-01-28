@@ -15,7 +15,7 @@ function imageFilter(req, file, cb) {
   ];
 
   if (!allowedImageExtensions.includes(extension)) {
-    return cb(new Error('Only images are allowed'), false);
+    return cb(null, false);
   }
 
   return cb(null, true);
