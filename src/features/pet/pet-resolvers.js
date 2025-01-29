@@ -1,4 +1,5 @@
 const { GraphQLError } = require('graphql');
+const cloudinary = require('cloudinary').v2;
 
 const {
   utils: { handleGraphQLAuthError },
@@ -6,6 +7,7 @@ const {
 const { promiseResolver, buildPetFilters } = require('@Utils/index.js');
 
 const Pet = require('./pet-model.js');
+const deletePetImages = require('./utils/delete-pet-images.js');
 
 /* ======================= Queries ======================= */
 
@@ -161,6 +163,19 @@ async function remove(_, { id }, { user }) {
 
   if (deleteError) {
     throw new GraphQLError(deleteError.message, {
+      extensions: {
+        code: 'INTERNAL_SERVER_ERROR',
+      },
+    });
+  }
+
+  // Delete pet images from Cloudinary.
+  const [result, imageDeleteError] = await promiseResolver(
+    deletePetImages(deletedPet.images),
+  );
+
+  if (imageDeleteError) {
+    throw new GraphQLError(imageDeleteError.message, {
       extensions: {
         code: 'INTERNAL_SERVER_ERROR',
       },
