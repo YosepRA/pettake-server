@@ -36,23 +36,23 @@ function createPets(petAmount, user) {
   const images = [
     {
       publicId: 'pettake-demo-image-01',
-      url: 'https://placehold.co/600x400?text=PetTake+Demo+Image+01',
+      url: 'https://i.ibb.co.com/BHgqdm4R/victor-g-N04-FIf-Hhv-k-unsplash.jpg',
     },
     {
       publicId: 'pettake-demo-image-02',
-      url: 'https://placehold.co/600x400?text=PetTake+Demo+Image+02',
+      url: 'https://i.ibb.co.com/JR0GNTYS/justin-veenema-NH1d0x-X6-Ldk-unsplash.jpg',
     },
     {
       publicId: 'pettake-demo-image-03',
-      url: 'https://placehold.co/600x400?text=PetTake+Demo+Image+03',
+      url: 'https://i.ibb.co.com/6R71f1RB/michael-sum-LEpfef-Qf4r-U-unsplash.jpg',
     },
     {
       publicId: 'pettake-demo-image-04',
-      url: 'https://placehold.co/600x400?text=PetTake+Demo+Image+04',
+      url: 'https://i.ibb.co.com/GhJqgQQ/mikhail-vasilyev-Nodtn-Cs-Ld-TE-unsplash.jpg',
     },
     {
       publicId: 'pettake-demo-image-05',
-      url: 'https://placehold.co/600x400?text=PetTake+Demo+Image+05',
+      url: 'https://i.ibb.co.com/xtGSjgp0/pauline-loroy-U3a-F7hg-USrk-unsplash.jpg',
     },
   ];
 
