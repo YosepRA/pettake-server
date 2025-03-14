@@ -7,7 +7,7 @@ async function main() {
     username: 'testjoe',
     email: 'joe@mail.com',
     password: 'joe',
-    name: 'joe',
+    name: 'John Smith',
     phone: '+1 123 1234',
     address: '3434 Bubby Drive Taylor, TX 76574',
   };

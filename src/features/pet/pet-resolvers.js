@@ -39,7 +39,9 @@ async function list(
 }
 
 async function details(_, { id }) {
-  const [pet, petQueryError] = await promiseResolver(Pet.findById(id));
+  const [pet, petQueryError] = await promiseResolver(
+    Pet.findById(id).populate('author'),
+  );
 
   if (petQueryError) {
     throw new GraphQLError(petQueryError.message, {
