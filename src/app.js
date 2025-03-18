@@ -3,6 +3,7 @@ require('module-alias/register');
 
 const express = require('express');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const logger = require('morgan');
 const cors = require('cors');
 const { expressMiddleware } = require('@apollo/server/express4');
@@ -33,6 +34,7 @@ const sessionConfig = {
   secret: sessionSecret,
   saveUninitialized: false,
   resave: false,
+  store: MongoStore.create({ mongoUrl, ttl: 3 * 24 * 60 * 60 }),
 };
 
 const corsConfig = {
