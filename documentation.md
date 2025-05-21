@@ -1,10 +1,10 @@
-# PetTake Server Documentation
+# **PetTake Server Documentation**
 
 Documentation for PetTake server application.
 
 ---
 
-### Specification
+## **Specification**
 
 - Express.js
 - MongoDB/Mongoose
@@ -23,9 +23,9 @@ Documentation for PetTake server application.
 
 ---
 
-## User
+## **User**
 
-### Data Structure
+### **Data Structure**
 
 ```js
 {
@@ -72,7 +72,9 @@ Example
 }
 ```
 
-### REST API
+---
+
+### **REST API**
 
 ### **User Registration**
 
@@ -80,7 +82,7 @@ Register a new user.
 
 **Endpoint**
 
-```
+```http
 POST /user/register
 ```
 
@@ -92,26 +94,12 @@ _No parameter._
 
 Type: `JSON`
 
-- `user` **Required**  
-  type: `Object`  
-  Default: `{}`  
-  User data object.
-  - `username` **Required**  
-    type: `String`  
-    Default: ''  
-    User's username.
-  - `password` **Required**  
-    type: `String`  
-    Default: ''  
-    User's password.
-  - `email` **Required**  
-    type: `String`  
-    Default: ''  
-    User's email address.
-  - `name` **Required**  
-    type: `String`  
-    Default: ''  
-    User's full name.
+| Property        | Type     | Required | Default | Description      |
+| --------------- | -------- | -------- | ------- | ---------------- |
+| `user.username` | `string` | `true`   | ''      | User's username. |
+| `user.password` | `string` | `true`   | ''      | User's password. |
+| `user.email`    | `string` | `true`   | ''      | User's email.    |
+| `user.name`     | `string` | `true`   | ''      | User's fullname. |
 
 Example:
 
@@ -162,13 +150,15 @@ Username and/or email is already registered:
 }
 ```
 
+---
+
 ### **User Login**
 
 Logs in a user.
 
 **Endpoint**
 
-```
+```http
 POST /user/login
 ```
 
@@ -180,18 +170,11 @@ _No parameter._
 
 Type: `JSON`
 
-- `username` **Required**  
-  type: `String`  
-  Default: ''  
-  User's username.
-- `password` **Required**  
-  type: `String`  
-  Default: ''  
-  User's password.
-- `rememberMe` **Required**  
-  type: `Boolean`  
-  Default: `false`  
-  Option for user to save the login session for a set period of time. Default to 30 days.
+| Property     | Type      | Required | Default | Description                       |
+| ------------ | --------- | -------- | ------- | --------------------------------- |
+| `username`   | `string`  | `true`   | ''      | User's username.                  |
+| `password`   | `string`  | `true`   | ''      | User's password.                  |
+| `rememberMe` | `boolean` | `false`  | `false` | Extend user's session age toggle. |
 
 Example:
 
@@ -239,13 +222,15 @@ Incorrect credentials:
 }
 ```
 
+---
+
 ### **Get User Session**
 
 Get a user login session information.
 
 **Endpoint**
 
-```
+```http
 GET /user/get-user-session
 ```
 
@@ -284,13 +269,15 @@ No login session found:
 }
 ```
 
+---
+
 ### **User Logout**
 
 Logs out a user.
 
 **Endpoint**
 
-```
+```http
 POST /user/logout
 ```
 
@@ -323,5 +310,142 @@ No login session found:
 {
   status: 'error',
   message: 'No login session found.'
+}
+```
+
+---
+
+### **Get User Profile**
+
+Get user profile data.
+
+**Endpoint**
+
+```http
+GET /user/profile
+```
+
+**Parameters**
+
+_No parameter._
+
+**Body**
+
+_No body data._
+
+**Return**  
+User data without password and pets.
+
+**Response**
+
+Successful response:
+
+```js
+{
+  status: 'ok',
+  user: {
+    username: 'joe',
+    email: 'joe@mail.com',
+    name: 'Joe Smith',
+    phone: '+1 123 1234',
+    address: '3434 Bubby Drive Taylor, TX 76574',
+  }
+}
+```
+
+**Error Responses**
+
+---
+
+### **Change User Profile**
+
+Change user's name, phone number, and address.
+
+**Endpoint**
+
+```http
+PUT /user/profile
+```
+
+**Parameters**
+
+_No parameter._
+
+**Body**
+
+Type: `JSON`
+
+| Property  | Type     | Required | Default | Description              |
+| --------- | -------- | -------- | ------- | ------------------------ |
+| `name`    | `string` | `false`  | ''      | User's new name.         |
+| `phone`   | `string` | `false`  | ''      | User's new phone number. |
+| `address` | `string` | `false`  | ''      | User's new address.      |
+
+**Return**  
+User object with updated data.
+
+**Response**
+
+Successful response:
+
+```js
+{
+  status: 'ok',
+  user: {
+    name: 'Joe Smith',
+    phone: '+1 123 1234',
+    address: '3434 Bubby Drive Taylor, TX 76574',
+  }
+}
+```
+
+**Error Responses**
+
+---
+
+### **Change User Password**
+
+Change user password.
+
+**Endpoint**
+
+```http
+POST /user/change-password
+```
+
+**Parameters**
+
+_No parameter._
+
+**Body**
+
+Type: `JSON`
+
+| Property      | Type     | Required | Default | Description          |
+| ------------- | -------- | -------- | ------- | -------------------- |
+| `oldPassword` | `string` | `true`   | ''      | User's old password. |
+| `newPassword` | `string` | `true`   | ''      | User's new password. |
+
+**Return**  
+Password change success status.
+
+**Response**
+
+Successful response:
+
+```js
+{
+  status: 'ok';
+}
+```
+
+**Error Responses**
+
+Missing required data:
+
+```js
+{
+  status: 'error',
+  message: 'Missing "x" property from argument.'
 }
 ```

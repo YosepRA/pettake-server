@@ -22,4 +22,10 @@ router.get('/get-user-session', controller.getUserSession);
 
 router.get('/protected', protectRoute, controller.protectedRouteTest);
 
+router.get('/profile', protectRoute, controller.getUserProfile);
+
+router.put('/profile', protectRoute, controller.changeUserProfile);
+
+router.post('/change-password', protectRoute, controller.changePassword);
+
 module.exports = router;
