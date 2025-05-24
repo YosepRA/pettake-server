@@ -78,7 +78,7 @@ const userController = {
     if (req.isUnauthenticated()) {
       const unauthenticatedResponse = {
         status: 'ok',
-        message: null,
+        user: null,
       };
 
       return res.json(unauthenticatedResponse);
