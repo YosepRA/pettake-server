@@ -38,7 +38,7 @@ const sessionConfig = {
 };
 
 const corsConfig = {
-  origin: ['http://localhost:8000'],
+  origin: process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : [],
   credentials: true,
 };
 
